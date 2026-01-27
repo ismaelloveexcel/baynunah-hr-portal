@@ -111,7 +111,7 @@ Consider adding security checks to your CI/CD pipeline:
 
 ## References
 - [npm Security Advisory for jsPDF](https://www.npmjs.com/advisories)
-- [jsPDF GitHub Repository](https://github.com/parallax/jsPDF)
+- [jsPDF GitHub Repository](https://github.com/MrRio/jsPDF)
 - [OWASP Dependency Check](https://owasp.org/www-project-dependency-check/)
 
 ---
