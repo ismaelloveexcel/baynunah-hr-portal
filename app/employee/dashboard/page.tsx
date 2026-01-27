@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Clock, Calendar, FileText, DollarSign, User, Bell } from 'lucide-react'
+import { Clock, Calendar, FileText, User, Bell } from 'lucide-react'
 
 export default function EmployeeDashboard() {
   const searchParams = useSearchParams()
