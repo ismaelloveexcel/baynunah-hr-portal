@@ -1,0 +1,438 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// CORE ENTITIES
+// ============================================
+
+model Entity {
+  id            String   @id @default(uuid())
+  name          String
+  nameArabic    String?
+  licenseNumber String   @unique
+  address       String
+  city          String   @default("Abu Dhabi")
+  country       String   @default("United Arab Emirates")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  employees     Employee[]
+  users         User[]
+
+  @@map("entities")
+}
+
+// ============================================
+// USER MANAGEMENT & AUTHENTICATION
+// ============================================
+
+enum UserRole {
+  HR_ADMIN
+  EMPLOYEE
+  CANDIDATE
+  HIRING_MANAGER
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String?
+  role         UserRole
+  passToken    String   @unique
+  entityId     String?
+  entity       Entity?  @relation(fields: [entityId], references: [id])
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  employee       Employee?
+  candidate      Candidate?
+  hiringManager  HiringManager?
+  auditLogs      AuditLog[]
+  notifications  Notification[]
+
+  @@index([passToken])
+  @@index([email])
+  @@map("users")
+}
+
+// ============================================
+// EMPLOYEE MANAGEMENT
+// ============================================
+
+enum ContractType {
+  UNLIMITED
+  LIMITED
+}
+
+enum EmploymentStatus {
+  ACTIVE
+  ON_LEAVE
+  NOTICE_PERIOD
+  TERMINATED
+}
+
+model Employee {
+  id                        String           @id @default(uuid())
+  userId                    String           @unique
+  user                      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entityId                  String
+  entity                    Entity           @relation(fields: [entityId], references: [id])
+  
+  employeeNumber            String           @unique
+  firstName                 String
+  lastName                  String
+  dateOfBirth               DateTime?
+  nationality               String?
+  phoneNumber               String?
+  position                  String
+  department                String
+  contractType              ContractType
+  employmentStatus          EmploymentStatus @default(ACTIVE)
+  joinDate                  DateTime
+  contractStartDate         DateTime
+  contractEndDate           DateTime?
+  basicSalary               Decimal          @db.Decimal(10, 2)
+  
+  visaNumber                String?
+  visaExpiryDate            DateTime?
+  emiratesId                String?
+  emiratesIdExpiry          DateTime?
+  passportNumber            String?
+  passportExpiry            DateTime?
+  
+  profileCompletionPercent  Int              @default(0)
+  createdAt                 DateTime         @default(now())
+  updatedAt                 DateTime         @updatedAt
+
+  timeAttendance            TimeAttendance[]
+  leaveRequests             LeaveRequest[]
+  leaveBalances             LeaveBalance[]
+  documents                 Document[]
+  reimbursements            Reimbursement[]
+  complianceAlerts          ComplianceAlert[]
+  
+  @@index([employeeNumber])
+  @@map("employees")
+}
+
+// ============================================
+// TIME & ATTENDANCE
+// ============================================
+
+enum LocationType {
+  HEAD_OFFICE
+  WFH
+  CLIENT_SITE
+  FIELD_SERVICE
+  WAREHOUSE
+  BUSINESS_TRAVEL
+}
+
+model TimeAttendance {
+  id              String       @id @default(uuid())
+  employeeId      String
+  employee        Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  date            DateTime     @db.Date
+  clockInTime     DateTime
+  clockOutTime    DateTime?
+  locationType    LocationType
+  hoursWorked     Float?
+  overtimeHours   Float?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([employeeId, date])
+  @@map("time_attendance")
+}
+
+// ============================================
+// LEAVE MANAGEMENT
+// ============================================
+
+enum LeaveType {
+  ANNUAL
+  SICK
+  MATERNITY
+  PATERNITY
+  EMERGENCY
+  OFFSET_DAY
+  UNPAID
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+model LeaveRequest {
+  id              String       @id @default(uuid())
+  employeeId      String
+  employee        Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  leaveType       LeaveType
+  startDate       DateTime     @db.Date
+  endDate         DateTime     @db.Date
+  daysRequested   Float
+  reason          String?
+  status          LeaveStatus  @default(PENDING)
+  approverId      String?
+  approvedAt      DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([employeeId, status])
+  @@map("leave_requests")
+}
+
+model LeaveBalance {
+  id              String       @id @default(uuid())
+  employeeId      String
+  employee        Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  year            Int
+  leaveType       LeaveType
+  allocated       Float
+  used            Float        @default(0)
+  balance         Float        @default(0)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@unique([employeeId, year, leaveType])
+  @@map("leave_balances")
+}
+
+// ============================================
+// DOCUMENT MANAGEMENT
+// ============================================
+
+enum DocumentType {
+  EMPLOYMENT_CONTRACT
+  VISA_COPY
+  EMIRATES_ID
+  PASSPORT
+  EDUCATIONAL_CERTIFICATE
+  MEDICAL_FITNESS
+  OTHER
+}
+
+enum DocumentStatus {
+  PENDING
+  VERIFIED
+  EXPIRED
+}
+
+model Document {
+  id              String         @id @default(uuid())
+  employeeId      String
+  employee        Employee       @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  documentType    DocumentType
+  fileName        String
+  fileUrl         String
+  expiryDate      DateTime?      @db.Date
+  status          DocumentStatus @default(PENDING)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([employeeId, documentType])
+  @@map("documents")
+}
+
+// ============================================
+// COMPLIANCE & ALERTS
+// ============================================
+
+enum AlertType {
+  CONTRACT_EXPIRY
+  VISA_EXPIRY
+  EMIRATES_ID_EXPIRY
+  PASSPORT_EXPIRY
+  EXCESSIVE_OVERTIME
+  MISSING_CONTRACT
+  MISSING_DOCUMENT
+}
+
+enum AlertSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model ComplianceAlert {
+  id              String         @id @default(uuid())
+  employeeId      String?
+  employee        Employee?      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  alertType       AlertType
+  severity        AlertSeverity
+  title           String
+  description     String
+  isResolved      Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([employeeId, isResolved])
+  @@map("compliance_alerts")
+}
+
+// ============================================
+// REIMBURSEMENT
+// ============================================
+
+enum ExpenseCategory {
+  MEDICAL
+  TRAVEL
+  TRAINING
+  OTHER
+}
+
+enum ReimbursementStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PAID
+}
+
+model Reimbursement {
+  id              String               @id @default(uuid())
+  employeeId      String
+  employee        Employee             @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  category        ExpenseCategory
+  amount          Decimal              @db.Decimal(10, 2)
+  description     String
+  receiptUrl      String?
+  status          ReimbursementStatus  @default(PENDING)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  @@index([employeeId, status])
+  @@map("reimbursements")
+}
+
+// ============================================
+// RECRUITMENT
+// ============================================
+
+enum CandidateStatus {
+  APPLIED
+  SCREENING
+  INTERVIEW_SCHEDULED
+  INTERVIEWED
+  OFFERED
+  REJECTED
+}
+
+model Candidate {
+  id              String          @id @default(uuid())
+  userId          String          @unique
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName       String
+  lastName        String
+  email           String
+  phoneNumber     String?
+  position        String
+  cvUrl           String?
+  status          CandidateStatus @default(APPLIED)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  interviews      Interview[]
+  
+  @@map("candidates")
+}
+
+model HiringManager {
+  id              String    @id @default(uuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName       String
+  lastName        String
+  department      String
+  position        String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  interviews      Interview[]
+  
+  @@map("hiring_managers")
+}
+
+enum InterviewStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+model Interview {
+  id              String           @id @default(uuid())
+  candidateId     String
+  candidate       Candidate        @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  hiringManagerId String
+  hiringManager   HiringManager    @relation(fields: [hiringManagerId], references: [id])
+  scheduledAt     DateTime
+  duration        Int
+  status          InterviewStatus  @default(SCHEDULED)
+  score           Int?
+  feedback        String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([candidateId])
+  @@map("interviews")
+}
+
+// ============================================
+// NOTIFICATIONS
+// ============================================
+
+enum NotificationType {
+  SYSTEM
+  LEAVE_APPROVED
+  LEAVE_REJECTED
+  DOCUMENT_VERIFIED
+  COMPLIANCE_ALERT
+  CLOCK_IN_REMINDER
+}
+
+model Notification {
+  id              String           @id @default(uuid())
+  userId          String
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type            NotificationType
+  title           String
+  message         String
+  actionUrl       String?
+  isRead          Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+// ============================================
+// AUDIT LOGS
+// ============================================
+
+model AuditLog {
+  id              String    @id @default(uuid())
+  userId          String?
+  user            User?     @relation(fields: [userId], references: [id])
+  action          String
+  entityType      String
+  entityId        String?
+  details         String?
+  createdAt       DateTime  @default(now())
+
+  @@index([userId])
+  @@map("audit_logs")
+}
+

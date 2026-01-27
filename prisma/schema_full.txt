@@ -1,0 +1,1 @@
+See ARCHITECTURE.md for complete schema - creating simplified version for MVP
