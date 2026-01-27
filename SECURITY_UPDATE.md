@@ -70,8 +70,8 @@ Once PDF generation features are implemented, verify:
 ## Migration Notes
 
 If you encounter issues after updating to jsPDF 4.0.0, refer to:
-- [jsPDF Changelog](https://github.com/parallax/jsPDF/blob/master/CHANGELOG.md)
-- [jsPDF v4.0.0 Release Notes](https://github.com/parallax/jsPDF/releases/tag/v4.0.0)
+- [jsPDF Changelog](https://github.com/MrRio/jsPDF/blob/master/CHANGELOG.md)
+- [jsPDF v4.0.0 Release Notes](https://github.com/MrRio/jsPDF/releases/tag/v4.0.0)
 
 ## Current Status
 
