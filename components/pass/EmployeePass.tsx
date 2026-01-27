@@ -10,7 +10,7 @@ interface EmployeePassProps {
     position: string
     department: string
     employeeNumber: string
-    phoneNumber?: string
+    phoneNumber?: string | null
     entity: {
       name: string
     }

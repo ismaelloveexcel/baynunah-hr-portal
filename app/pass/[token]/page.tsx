@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import EmployeePass from '@/components/pass/EmployeePass'
 
