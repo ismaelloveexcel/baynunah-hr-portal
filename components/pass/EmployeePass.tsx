@@ -1,7 +1,7 @@
 'use client'
 
 import { QRCodeSVG } from 'qrcode.react'
-import { Building2, Mail, Phone, MapPin, Calendar } from 'lucide-react'
+import { Building2, Mail, Phone } from 'lucide-react'
 
 interface EmployeePassProps {
   employee: {
