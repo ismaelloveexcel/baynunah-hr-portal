@@ -4,7 +4,7 @@
 January 27, 2026
 
 ## Issue
-Three security vulnerabilities were identified in the jsPDF dependency (version 2.5.2):
+Three security vulnerabilities were identified in the jsPDF dependency (version ^2.5.0):
 
 ### 1. Denial of Service (DoS) Vulnerability
 - **Affected versions**: <= 3.0.1
