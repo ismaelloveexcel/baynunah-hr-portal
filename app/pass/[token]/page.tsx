@@ -2,13 +2,13 @@ import { prisma } from '@/lib/prisma'
 import EmployeePass from '@/components/pass/EmployeePass'
 
 interface PassPageProps {
-  params: {
+  params: Promise<{
     token: string
-  }
+  }>
 }
 
 export default async function PassPage({ params }: PassPageProps) {
-  const { token } = params
+  const { token } = await params
 
   // Validate pass token and get user data
   const user = await prisma.user.findUnique({
