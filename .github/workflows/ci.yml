@@ -13,7 +13,6 @@ jobs:
     env:
       # Placeholder environment variables for build-time checks
       DATABASE_URL: "postgresql://placeholder:placeholder@localhost:5432/placeholder"
-      NEXTAUTH_SECRET: "ci-build-secret-placeholder"
       JWT_SECRET: "ci-build-jwt-secret-placeholder"
       NEXT_PUBLIC_APP_URL: "http://localhost:3000"
 
