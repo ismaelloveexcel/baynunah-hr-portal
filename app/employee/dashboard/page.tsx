@@ -8,7 +8,12 @@ export default function EmployeeDashboard() {
   const searchParams = useSearchParams()
   const token = searchParams?.get('token')
   const [loading, setLoading] = useState(true)
-  const [employee, setEmployee] = useState<any>(null)
+  const [employee, setEmployee] = useState<{
+    firstName: string
+    lastName: string
+    position: string
+    profileCompletionPercent: number
+  } | null>(null)
 
   useEffect(() => {
     if (token) {
