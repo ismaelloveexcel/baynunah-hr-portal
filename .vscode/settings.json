@@ -74,6 +74,5 @@
     "**/.next": true,
     "**/package-lock.json": true
   },
-  "prisma.showPrismaDataPlatformNotification": false,
-  "jest.jestCommandLine": "npx jest"
+  "prisma.showPrismaDataPlatformNotification": false
 }

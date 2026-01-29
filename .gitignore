@@ -39,10 +39,8 @@ next-env.d.ts
 prisma/migrations
 
 # IDE
-# .vscode - Included for project-specific settings, MCP config, and extensions
-# Exclude user-specific files
-.vscode/*.code-workspace
-.vscode/*.code-snippets
+# Include project-specific VS Code settings, MCP config, and extensions
+.vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
 !.vscode/mcp.json

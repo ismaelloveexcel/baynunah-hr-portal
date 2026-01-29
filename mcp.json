@@ -19,16 +19,19 @@
         "@modelcontextprotocol/server-postgres",
         "${DATABASE_URL}"
       ],
-      "description": "PostgreSQL database access for querying and exploring the Baynunah HR database schema"
+      "description": "PostgreSQL database access for querying and exploring the Baynunah HR database schema. WARNING: Use only with development databases, not production credentials."
     },
     "filesystem": {
       "command": "npx",
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "."
+        "./app",
+        "./components",
+        "./lib",
+        "./prisma"
       ],
-      "description": "File system access for reading and analyzing project files"
+      "description": "File system access restricted to source code directories (app, components, lib, prisma). Excludes sensitive config files."
     },
     "fetch": {
       "command": "npx",
