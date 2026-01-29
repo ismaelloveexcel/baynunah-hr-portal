@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json.schemastore.org/mcp-servers.json",
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "GitHub integration for repository operations, issues, and pull requests"
+    },
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "${DATABASE_URL}"
+      ],
+      "description": "PostgreSQL database access for querying and exploring the Baynunah HR database schema. WARNING: Use only with development databases, not production credentials."
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "./app",
+        "./components",
+        "./lib",
+        "./prisma"
+      ],
+      "description": "File system access restricted to source code directories (app, components, lib, prisma). Excludes sensitive config files."
+    },
+    "fetch": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-fetch"
+      ],
+      "description": "HTTP fetch capabilities for accessing external APIs and documentation"
+    }
+  }
+}
