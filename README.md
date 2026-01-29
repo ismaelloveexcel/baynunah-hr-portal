@@ -194,6 +194,49 @@ npm run db:push      # Push schema to database
 npm run db:studio    # Open Prisma Studio
 ```
 
+## 🤖 GitHub Copilot & MCP Configuration
+
+This project includes custom configuration for GitHub Copilot and Model Context Protocol (MCP) servers to enhance AI-assisted development.
+
+### Custom Instructions
+
+The project includes `.github/copilot-instructions.md` which provides:
+- Project-specific context (UAE HR Portal for Baynunah Group)
+- UAE Labor Law compliance rules and calculations
+- TypeScript and Next.js coding standards
+- Mobile-first design guidelines
+- Security requirements
+- Code patterns and examples
+
+### MCP Server Configuration
+
+MCP (Model Context Protocol) servers extend Copilot's capabilities. Configuration files:
+
+- `mcp.json` - Root-level MCP server configuration
+- `.vscode/mcp.json` - VS Code-specific MCP configuration
+
+Available MCP servers:
+- **github** - Repository operations, issues, and pull requests
+- **postgres** - Database schema exploration and queries
+- **filesystem** - Project file access and analysis
+- **fetch** - External API and documentation access
+
+### VS Code Setup
+
+The `.vscode/` directory includes:
+- `settings.json` - Editor settings optimized for this project
+- `extensions.json` - Recommended VS Code extensions
+- `mcp.json` - MCP server configuration
+
+### Prompt Library
+
+See `.github/COPILOT_PROMPTS.md` for ready-to-use prompts tailored to this project, including:
+- UAE compliance calculations
+- API route creation
+- Component development
+- Code review
+- Testing
+
 ## 📊 Implementation Phases
 
 ### Phase 1: Architecture & Foundation ✅
