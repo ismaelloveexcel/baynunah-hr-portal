@@ -28,6 +28,13 @@
         "${workspaceFolder}/lib",
         "${workspaceFolder}/prisma"
       ]
+    },
+    "fetch": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-fetch"
+      ]
     }
   }
 }
